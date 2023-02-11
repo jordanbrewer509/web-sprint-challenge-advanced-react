@@ -5,14 +5,18 @@ const initialMessage = ''
 const initialEmail = ''
 const initialSteps = 0
 const initialIndex = 4 // the index the "B" is at
+const gridArr = [1, 2, 3, 4, 5, 6, 7, 8, 9];
 
 export default function AppFunctional(props) {
   // THE FOLLOWING HELPERS ARE JUST RECOMMENDATIONS.
   // You can delete them and build your own logic from scratch.
 
-  function getXY() {
+  function getXY(idx) {
     // It it not necessary to have a state to track the coordinates.
     // It's enough to know what index the "B" is at, to be able to calculate them.
+        if((idx + 1) <= 3) { return ({x: (idx + 1), y: 1}) }
+        else if((idx + 1) > 3 && (idx + 1) <= 6) { return ({x: ((idx + 1) - 3), y: 2}) }
+        else if((idx + 1) > 6 && (idx + 1) <= 9) { return ({x: ((idx + 1) - 6), y: 3}) }  
   }
 
   function getXYMessage() {
