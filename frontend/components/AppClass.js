@@ -1,4 +1,5 @@
-import React from 'react'
+import React from 'react';
+import { useState } from 'react';
 
 // Suggested initial states
 const initialMessage = ''
@@ -11,16 +12,51 @@ const initialState = {
   email: initialEmail,
   index: initialIndex,
   steps: initialSteps,
+  coordinate: {x: 2, y: 2}
 }
 
 export default class AppClass extends React.Component {
   // THE FOLLOWING HELPERS ARE JUST RECOMMENDATIONS.
   // You can delete them and build your own logic from scratch.
 
+  constructor() {
+    super();
+    this.message = initialState.message;
+    this.email = initialState.email;
+    this.steps = initialState.steps
+    this.coordinate = initialState.coordinate;
+    this.active = '';
+    this.state = {index: initialState.index}
+    }
+  
   getXY = () => {
     // It it not necessary to have a state to track the coordinates.
     // It's enough to know what index the "B" is at, to be able to calculate them.
   }
+
+  getIndex = () => {
+    const coordinate = this.coordinate;
+    if(coordinate.x === 1 && coordinate.y === 1) {
+      return this.setState({index: 0})
+    } else if(coordinate.x === 2 && coordinate.y === 1) {
+        return this.setState({index: 1})
+    } else if(coordinate.x === 3 && coordinate.y === 1) {
+        return this.setState({index: 2})
+    } else if(coordinate.x === 1 && coordinate.y === 2) {
+        return this.setState({index: 3})
+    } else if(coordinate.x === 2 && coordinate.y === 2) {
+        return this.setState({index: 4})
+    } else if(coordinate.x === 3 && coordinate.y === 2) {
+        return this.setState({index: 5})
+    } else if(coordinate.x === 1 && coordinate.y === 3) {
+        return this.setState({index: 6})
+    } else if(coordinate.x === 2 && coordinate.y === 3) {
+        return this.setState({index: 7})
+    } else if(coordinate.x === 3 && coordinate.y === 3) {
+        return this.setState({index: 8})
+    }
+  }
+  
 
   getXYMessage = () => {
     // It it not necessary to have a state to track the "Coordinates (2, 2)" message for the user.
@@ -36,6 +72,40 @@ export default class AppClass extends React.Component {
     // This helper takes a direction ("left", "up", etc) and calculates what the next index
     // of the "B" would be. If the move is impossible because we are at the edge of the grid,
     // this helper should return the current index unchanged.
+    const coordinate = this.coordinate;
+        if(direction === "up" && coordinate.y > 0) {
+      if(coordinate.y <= 1) {
+        return this.message = "You can't go any higher up";
+      }
+      steps++;
+      coordinate.y = coordinate.y - 1;
+      this.getIndex(coordinate)
+      return coordinate;
+    } else if(direction === "down") {
+      if(coordinate.y >= 3) {
+        return this.message = "You can't go any further down";
+      }
+      steps++;
+      coordinate.y = coordinate.y + 1;
+      this.getIndex(coordinate)
+      return coordinate;
+    } else if(direction === "left") {
+        if(coordinate.x <= 1) {
+          return this.message = "You can't go farther left";
+        }
+      steps++;
+      coordinate.x = coordinate.x - 1;
+      this.getIndex(coordinate)
+      return coordinate;
+    } else if(direction === "right") {
+        if(coordinate.x >= 3) {
+          return this.message = "You can't go farther right";
+        }
+      steps++;
+      coordinate.x = coordinate.x + 1;
+      this.getIndex(coordinate)
+      return coordinate;
+    }
   }
 
   move = (evt) => {
@@ -45,6 +115,8 @@ export default class AppClass extends React.Component {
 
   onChange = (evt) => {
     // You will need this to update the value of the input.
+    
+    this.getNextIndex(evt.target.id)
   }
 
   onSubmit = (evt) => {
@@ -62,8 +134,8 @@ export default class AppClass extends React.Component {
         <div id="grid">
           {
             [0, 1, 2, 3, 4, 5, 6, 7, 8].map(idx => (
-              <div key={idx} className={`square${idx === 4 ? ' active' : ''}`}>
-                {idx === 4 ? 'B' : null}
+              <div key={idx} className={`square${idx === this.state.index ? ' active' : ''}`}>
+                {idx === this.state.index ? 'B' : null}
               </div>
             ))
           }
@@ -72,11 +144,11 @@ export default class AppClass extends React.Component {
           <h3 id="message"></h3>
         </div>
         <div id="keypad">
-          <button id="left">LEFT</button>
-          <button id="up">UP</button>
-          <button id="right">RIGHT</button>
-          <button id="down">DOWN</button>
-          <button id="reset">reset</button>
+        <button id="left" onClick={this.onChange}>LEFT</button>
+        <button id="up" onClick={this.onChange}>UP</button>
+        <button id="right" onClick={this.onChange}>RIGHT</button>
+        <button id="down" onClick={this.onChange}>DOWN</button>
+        <button id="reset" onClick={this.reset}>reset</button>
         </div>
         <form>
           <input id="email" type="email" placeholder="type email"></input>

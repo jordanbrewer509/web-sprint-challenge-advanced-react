@@ -1,21 +1,28 @@
-import React from 'react'
-import { useState } from 'react'
+import React from 'react';
+import { useState } from 'react';
+import axios from 'axios';
 
 // Suggested initial states
 const initialMessage = ''
 const initialEmail = ''
 const initialSteps = 0
 const initialIndex = 4 // the index the "B" is at
-const gridArr = [[0, 1, 2],[3, 4, 5],[6, 7, 8]];
+const gridArr = [
+  [0, 1, 2],
+  [3, 4, 5],
+  [6, 7, 8]
+];
 const initialCoordinate = {x: 2, y: 2};
 let steps = 0;
+
 
 export default function AppFunctional(props) {
   // THE FOLLOWING HELPERS ARE JUST RECOMMENDATIONS.
   // You can delete them and build your own logic from scratch.
-  const [index, setIndex] = useState(initialIndex);
+  const [index, setIndex]           = useState(initialIndex);
   const [coordinate, setCoordinate] = useState(initialCoordinate)
-  const [message, setMessage] = useState(initialMessage)
+  const [message, setMessage]       = useState(initialMessage)
+  const [email, setEmail]           = useState(initialEmail)
 
   function getXY(index) {
     // It it not necessary to have a state to track the coordinates.
@@ -109,6 +116,19 @@ export default function AppFunctional(props) {
 
   function onSubmit(evt) {
     // Use a POST request to send a payload to the server.
+    evt.preventDefault();
+    axios.post(`http://localhost:9000/api/result`, {
+      'x': coordinate.x,
+      'y': coordinate.y,
+      'steps': steps,
+      'email': document.getElementById('email').value
+    })
+      .then(res => {
+        setMessage(res.data.message)
+      })
+      .catch(err => {
+        console.log(err);
+      })
   }
 
   return (
@@ -136,7 +156,7 @@ export default function AppFunctional(props) {
         <button id="down" onClick={onChange}>DOWN</button>
         <button id="reset" onClick={reset}>reset</button>
       </div>
-      <form>
+      <form onSubmit={onSubmit}>
         <input id="email" type="email" placeholder="type email"></input>
         <input id="submit" type="submit"></input>
       </form>
