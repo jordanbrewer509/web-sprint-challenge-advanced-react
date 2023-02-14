@@ -5,7 +5,6 @@ import axios from 'axios';
 // Suggested initial states
 const initialMessage = ''
 const initialEmail = ''
-const initialSteps = 0
 const initialIndex = 4 // the index the "B" is at
 const gridArr = [
   [0, 1, 2],
@@ -15,7 +14,6 @@ const gridArr = [
 const initialCoordinate = {x: 2, y: 2};
 let steps = 0;
 
-
 export default function AppFunctional(props) {
   // THE FOLLOWING HELPERS ARE JUST RECOMMENDATIONS.
   // You can delete them and build your own logic from scratch.
@@ -24,19 +22,19 @@ export default function AppFunctional(props) {
   const [message, setMessage]       = useState(initialMessage)
   const [email, setEmail]           = useState(initialEmail)
 
-  function getXY(index) {
-    // It it not necessary to have a state to track the coordinates.
-    // It's enough to know what index the "B" is at, to be able to calculate them.
-    for(let i = 0; i < gridArr.length; i++) {
-      for(let j = 0; j < gridArr.length; j++) {
-        if(gridArr[i][j] === index) {
-          coordinate.x = parseInt(coordinate.x + [i + 1]);
-          coordinate.y = parseInt(coordinate.y + [j + 1]);
-          return coordinate;
-        }
-        }
-      }
-    }
+  // function getXY(index) {
+  //   // It is not necessary to have a state to track the coordinates.
+  //   // It's enough to know what index the "B" is at, to be able to calculate them.
+  //   for(let i = 0; i < gridArr.length; i++) {
+  //     for(let j = 0; j < gridArr.length; j++) {
+  //       if(gridArr[i][j] === index) {
+  //         coordinate.x = parseInt(coordinate.x + [i + 1]);
+  //         coordinate.y = parseInt(coordinate.y + [j + 1]);
+  //         return coordinate;
+  //       }
+  //       }
+  //     }
+  //   }
 
   function getIndex(coordinate) {
     // I will use setIndex at the end of this function
