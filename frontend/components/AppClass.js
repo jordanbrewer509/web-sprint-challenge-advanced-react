@@ -77,7 +77,7 @@ export default class AppClass extends React.Component {
       if(coordinate.y <= 1) {
         return this.message = "You can't go any higher up";
       }
-      steps++;
+      this.steps++;
       coordinate.y = coordinate.y - 1;
       this.getIndex(coordinate)
       return coordinate;
@@ -85,7 +85,7 @@ export default class AppClass extends React.Component {
       if(coordinate.y >= 3) {
         return this.message = "You can't go any further down";
       }
-      steps++;
+      this.steps++;
       coordinate.y = coordinate.y + 1;
       this.getIndex(coordinate)
       return coordinate;
@@ -93,7 +93,7 @@ export default class AppClass extends React.Component {
         if(coordinate.x <= 1) {
           return this.message = "You can't go farther left";
         }
-      steps++;
+      this.steps++;
       coordinate.x = coordinate.x - 1;
       this.getIndex(coordinate)
       return coordinate;
@@ -101,7 +101,7 @@ export default class AppClass extends React.Component {
         if(coordinate.x >= 3) {
           return this.message = "You can't go farther right";
         }
-      steps++;
+      this.steps++;
       coordinate.x = coordinate.x + 1;
       this.getIndex(coordinate)
       return coordinate;
@@ -128,8 +128,8 @@ export default class AppClass extends React.Component {
     return (
       <div id="wrapper" className={className}>
         <div className="info">
-          <h3 id="coordinates">Coordinates (2, 2)</h3>
-          <h3 id="steps">You moved 0 times</h3>
+          <h3 id="coordinates">{`Coordinates (${this.coordinate.x}, ${this.coordinate.y})`}</h3>
+          <h3 id="steps">{`You moved ${this.steps} times`}</h3>
         </div>
         <div id="grid">
           {
