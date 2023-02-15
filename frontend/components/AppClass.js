@@ -52,8 +52,6 @@ export default class AppClass extends React.Component {
   
   reset = () => {
     // Use this helper to reset all states to their initial values.
-    this.message = '';
-    this.email = '';
     this.steps = initialState.steps
     this.coordinate = {x: 2, y: 2}
     this.active = '';
@@ -71,39 +69,47 @@ export default class AppClass extends React.Component {
     // of the "B" would be. If the move is impossible because we are at the edge of the grid,
     // this helper should return the current index unchanged.
     const coordinate = this.coordinate;
-        if(direction === "up" && coordinate.y > 0) {
-      if(coordinate.y <= 1) {
-        return this.setState({message: "You can't go up"});
-      }
-      this.steps++;
-      coordinate.y = coordinate.y - 1;
-      this.getIndex(coordinate)
-      return coordinate;
-    } else if(direction === "down") {
+      if(direction === "up") {
+        if(coordinate.y <= 1) {
+          return this.setState({message: "You can't go up"});
+        }
+        this.setState({message: ''})
+        this.steps++;
+        coordinate.y = coordinate.y - 1;
+        this.getIndex(coordinate)
+        return coordinate;
+    } 
+    else if(direction === "down") {
       if(coordinate.y >= 3) {
         return this.setState({message: "You can't go down"});
       }
+      this.setState({message: ''})
       this.steps++;
       coordinate.y = coordinate.y + 1;
       this.getIndex(coordinate)
       return coordinate;
-    } else if(direction === "left") {
+    } 
+    else if(direction === "left") {
         if(coordinate.x <= 1) {
           return this.setState({message: "You can't go left"});
         }
+      this.setState({message: ''})
       this.steps++;
       coordinate.x = coordinate.x - 1;
       this.getIndex(coordinate)
       return coordinate;
-    } else if(direction === "right") {
+    } 
+    else if(direction === "right") {
         if(coordinate.x >= 3) {
           return this.setState({message: "You can't go right"});
         }
+      this.setState({message: ''})
       this.steps++;
       coordinate.x = coordinate.x + 1;
       this.getIndex(coordinate)
       return coordinate;
-    } else {
+    } 
+    else if(direction === "reset") {
       this.reset();
     }
   }
@@ -128,7 +134,7 @@ export default class AppClass extends React.Component {
     })
       .then(res => {
         this.setState({message: res.data.message})
-        this.resetGrid();
+        // this.resetGrid();
       })
       .catch(err => {
         console.log(err);
