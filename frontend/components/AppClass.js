@@ -12,7 +12,7 @@ const initialState = {
   email: initialEmail,
   index: initialIndex,
   steps: initialSteps,
-  coordinate: {x: 2, y: 2}
+  disable: true
 }
 
 export default class AppClass extends React.Component {
@@ -21,124 +21,117 @@ export default class AppClass extends React.Component {
 
   constructor() {
     super();
-    this.steps = initialState.steps
-    this.coordinate = initialState.coordinate;
-    this.active = '';
-    this.state = {
-      message: initialState.message, 
-      index: initialState.index, 
-      email: initialState.email}
-
-    }
-  
-  getIndex = (coordinate) => {
-    
-    if(coordinate.x === 1 && coordinate.y === 1) {
-      return  this.setState({...this.state, index: 0})
-    } else if(coordinate.x === 2 && coordinate.y === 1) {
-        return this.setState({...this.state, index: 1})
-    } else if(coordinate.x === 3 && coordinate.y === 1) {
-        return this.setState({...this.state, index: 2})
-    } else if(coordinate.x === 1 && coordinate.y === 2) {
-        return this.setState({...this.state, index: 3})
-    } else if(coordinate.x === 2 && coordinate.y === 2) {
-        return this.setState({...this.state, index: 4})
-    } else if(coordinate.x === 3 && coordinate.y === 2) {
-        return this.setState({...this.state, index: 5})
-    } else if(coordinate.x === 1 && coordinate.y === 3) {
-        return this.setState({...this.state, index: 6})
-    } else if(coordinate.x === 2 && coordinate.y === 3) {
-        return this.setState({...this.state, index: 7})
-    } else if(coordinate.x === 3 && coordinate.y === 3) {
-        return this.setState({...this.state, index: 8})
-    }
+    this.state = initialState;
   }
   
+  getXY = () => {
+    // It it not necessary to have a state to track the coordinates.
+    // It's enough to know what index the "B" is at, to be able to calculate them.
+    const coords = [
+      '(1, 1)', '(2, 1)', '(3, 1)',
+      '(1, 2)', '(2, 2)', '(3, 2)',
+      '(1, 3)', '(2, 3)', '(3, 3)'
+    ]
+    return coords[this.state.index]
+  }
+  
+  getXYMessage = () => {
+    // It it not necessary to have a state to track the "Coordinates (2, 2)" message for the user.
+    // You can use the `getXY` helper above to obtain the coordinates, and then `getXYMessage`
+    // returns the fully constructed string.
+    return `Coordinates ${this.getXY(this.state.index)}`
+  }
+
   reset = () => {
     // Use this helper to reset all states to their initial values.
-    this.steps = initialState.steps
-    this.coordinate = {x: 2, y: 2}
-    this.active = '';
-    this.setState({index: 4, message: '', email: ''})
-  }
-
-  resetGrid = () => {
-    this.steps = initialState.steps
-    this.coordinate = {x: 2, y: 2}
-    this.setState({...this.state, index: 4})
+    this.setState(initialState)
   }
 
   getNextIndex = (direction) => {
     // This helper takes a direction ("left", "up", etc) and calculates what the next index
     // of the "B" would be. If the move is impossible because we are at the edge of the grid,
     // this helper should return the current index unchanged.
-    const coordinate = this.coordinate;
-      if(direction === "up") {
-        if(coordinate.y <= 1) {
-          return this.setState({...this.state, message: "You can't go up"});
-        }
-        this.setState({message: ''})
-        this.steps++;
-        coordinate.y = coordinate.y - 1;
-        this.getIndex(coordinate)
-        return coordinate;
-    } 
-    else if(direction === "down") {
-      if(coordinate.y >= 3) {
-        return this.setState({...this.state, message: "You can't go down"});
-      }
-      this.setState({...this.state, message: ''})
-      this.steps++;
-      coordinate.y = coordinate.y + 1;
-      this.getIndex(coordinate)
-      return coordinate;
-    } 
-    else if(direction === "left") {
-        if(coordinate.x <= 1) {
-          return this.setState({...this.state, message: "You can't go left"});
-        }
-      this.setState({...this.state, message: ''})
-      this.steps++;
-      coordinate.x = coordinate.x - 1;
-      this.getIndex(coordinate)
-      return coordinate;
-    } 
-    else if(direction === "right") {
-        if(coordinate.x >= 3) {
-          return this.setState({...this.state, message: "You can't go right"});
-        }
-      this.setState({...this.state, message: ''})
-      this.steps++;
-      coordinate.x = coordinate.x + 1;
-      this.getIndex(coordinate)
-      return coordinate;
-    } 
-    else if(direction === "reset") {
-      this.reset();
+      if (direction === 'left') {
+      if([0,3,6].includes(this.state.index)) {
+        return this.state.index
+      } else { return this.state.index - 1 } 
+
+    } else if (direction === 'right') {
+      if([2,5,8].includes(this.state.index)) {
+        return this.state.index
+      } else { return this.state.index + 1 }
+
+    } else if (direction === 'up') {
+      if([0,1,2].includes(this.state.index)) {
+        return this.state.index
+      } else { return this.state.index - 3 }
+
+    } else if (direction === 'down') {
+      if([6,7,8].includes(this.state.index)) {
+        return this.state.index
+      } else { return this.state.index + 3 }
+
+    } else if (direction === 'reset') {
+      reset()
     }
   }
 
-  emailChangeHandler = (evt) => {
-    this.setState({...this.state, email: evt.target.value})
+  getMessage = (direction) => {
+    // This helper takes a direction ("left", "up", etc) and calculates what the next index
+    // of the "B" would be. If the move is impossible because we are at the edge of the grid,
+    // this helper should return the current index unchanged.
+    if (direction === 'left') {
+      if([0,3,6].includes(this.state.index)){
+        return "You can't go left"
+      }
+    } else if (direction === 'right') {
+      if([2,5,8].includes(this.state.index)) {
+        return "You can't go right"
+      }
+    } else if (direction === 'up') {
+      if([0,1,2].includes(this.state.index)) {
+        return "You can't go up"
+      }
+    } else if (direction === 'down') {
+      if([6,7,8].includes(this.state.index)) {
+        return "You can't go down"
+      }
+    }
+  }
+
+  move = (evt) => {
+    // This event handler can use the helper above to obtain a new index for the "B",
+    // and change any states accordingly.
+    this.setState({
+      ...this.state, 
+      steps: this.state.index === this.getNextIndex(evt.target.id)? this.state.steps: this.state.steps + 1, 
+      index: this.getNextIndex(evt.target.id), 
+      message: this.getMessage(evt.target.id)
+    })
   }
 
   onChange = (evt) => {
     // You will need this to update the value of the input.
-    this.getNextIndex(evt.target.id)
+      if(evt.target.value != ''){
+    this.setState({...this.state, disable: false})
+    }
+    if(evt.target.value === ''){
+      this.setState({...this.state, disable: true})
+    }
+    this.setState({...this.state, email: evt.target.value})
   }
 
   onSubmit = (evt) => {
     // Use a POST request to send a payload to the server.
     evt.preventDefault();
     axios.post(`http://localhost:9000/api/result`, {
-      'x': this.coordinate.x,
-      'y': this.coordinate.y,
-      'steps': this.steps,
+      'x': this.getXY(this.state.index).substring(1,2), 
+      'y': this.getXY(this.state.index).substring(4,5), 
+      'steps': this.state.steps,
       'email': this.state.email
     })
       .then(res => {
-        this.setState({...this.state, message: res.data.message, email: ''})
-        // this.resetGrid();
+        this.setState({...this.state, message: res.data.message, email: initialEmail})
       })
       .catch(err => {
         this.setState({...this.state, message: err.response.data.message});
@@ -150,8 +143,8 @@ export default class AppClass extends React.Component {
     return (
       <div id="wrapper" className={className}>
         <div className="info">
-          <h3 id="coordinates">{`Coordinates (${this.coordinate.x},${this.coordinate.y})`}</h3>
-          <h3 id="steps">{(this.steps === 0 || this.steps > 1) ? `You moved ${this.steps} times` : `You moved 1 time`}</h3>
+          <h3 id="coordinates">{this.getXYMessage()}</h3>
+          <h3 id="steps">You moved {this.state.steps} time{this.state.steps === 1 ? '': 's'}</h3>
         </div>
         <div id="grid">
           {
@@ -166,14 +159,14 @@ export default class AppClass extends React.Component {
           <h3 id="message">{this.state.message}</h3>
         </div>
         <div id="keypad">
-        <button id="left" onClick={this.onChange}>LEFT</button>
-        <button id="up" onClick={this.onChange}>UP</button>
-        <button id="right" onClick={this.onChange}>RIGHT</button>
-        <button id="down" onClick={this.onChange}>DOWN</button>
-        <button id="reset" onClick={this.onChange}>reset</button>
+        <button id="left" onClick={this.move}>LEFT</button>
+        <button id="up" onClick={this.move}>UP</button>
+        <button id="right" onClick={this.move}>RIGHT</button>
+        <button id="down" onClick={this.move}>DOWN</button>
+        <button id="reset" onClick={this.reset}>reset</button>
         </div>
         <form onSubmit={this.onSubmit}>
-          <input id="email" type="email" placeholder="type email" onChange={this.emailChangeHandler} value={this.state.email}></input>
+          <input id="email" type="email" placeholder="type email" onChange={this.onChange} value={this.state.email}></input>
           <input id="submit" type="submit"></input>
         </form>
       </div>

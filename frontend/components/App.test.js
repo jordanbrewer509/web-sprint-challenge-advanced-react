@@ -10,11 +10,11 @@ import { render, fireEvent, screen } from '@testing-library/react';
     expect(true).toBe(true)
   })
 
-  describe(`App is functioning properly`) {
-  render(<AppFunctional />)
-    test(`${testId} Test #1 - app is rendered to the dom`, () => {
-      expect(document.textContent('Welcome to the GRID')).toBeInTheDocument();
+  describe('Functional app renders properly', () => {
+    test('(Welcome to the GRID) renders to the dom', () => {
+      render(<AppFunctional />)
+      expect(`Welcome to the GRID`).toBeInTheDocument();
     })
-    test(`${testId} Test # - `, () => {})
-  }
+  })
+
 })
