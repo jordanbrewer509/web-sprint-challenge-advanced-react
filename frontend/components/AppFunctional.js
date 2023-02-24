@@ -40,6 +40,8 @@ export default function AppFunctional(props) {
     // Use this helper to reset all states to their initial values.
     setIndex(initialIndex)
     setSteps(initialSteps)
+    setEmail(initialEmail)
+    setMessage(initialMessage)
   }
 
   function getNextIndex(direction) {
